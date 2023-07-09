@@ -1,6 +1,5 @@
 async function lockedProfile() {
     const profilesUrl = "http://localhost:3030/jsonstore/advanced/profiles"
-    const profile = document.querySelector(".profile")
     const main = document.querySelector("#main")
 
 
@@ -9,21 +8,35 @@ async function lockedProfile() {
 
     const loadProfiles = () => {
         main.innerHTML = ""
+        let counter = 0
         for (const info of Object.values(data)) {
-            const copyProfile = profile.cloneNode(true)
+            main.innerHTML +=  `
+            <div class="profile">
+				<img src="./iconProfile2.png" class="userIcon" />
+				<label>Lock</label>
+				<input type="radio" name="user${counter + 1}Locked" value="lock" checked>
+				<label>Unlock</label>
+				<input type="radio" name="user${counter + 1}Locked" value="unlock"><br>
+				<hr>
+				<label>Username</label>
+				<input type="text" name="user${counter + 1}Username" value="${info.username}" disabled readonly />
+				<div id="user${counter + 1}HiddenFields">
+					<hr>
+					<label>Email:</label>
+					<input type="email" name="user${counter + 1}Email" value="${info.email}" disabled readonly />
+					<label>Age:</label>
+					<input type="email" name="user${counter + 1}Age" value="${info.age}" disabled readonly />
+				</div>
+				<button>Show more</button>
+			</div>
+            `
+            const userUsername = main.children[counter].querySelector(`div`);
+            userUsername.style.display = 'none';
 
-            const [username, email, age] = Array.from(copyProfile.querySelectorAll("input")).slice(2)
-            const showInfo = copyProfile.querySelector(".user1Username")
+            const btn = document.querySelector(".profile > button")
+            btn.addEventListener("click", showMoreInfo)
 
-            username.value = info.username
-            email.value = info.email
-            age.value = info.age
-            showInfo.style.display = "none"
-
-            const showMoreBtn = copyProfile.querySelector("button")
-            showMoreBtn.addEventListener("click", showMoreInfo)
-
-            main.appendChild(copyProfile)
+            counter += 1
 
         }
     }
@@ -31,19 +44,16 @@ async function lockedProfile() {
     loadProfiles()
 
     function showMoreInfo(event) {
-        const profile = event.target.parentElement
+        const unlocked = event.target.parentNode.querySelector('input[value="unlock"]');
+        const moreInfo = event.target.parentNode.querySelector('div');
+        const button = event.target.parentNode.querySelector('button');
 
-        const [locked, unlocked] = profile.querySelectorAll("input[type='radio']")
-        const showInfo = profile.querySelector(".user1Username")
-
-        if (unlocked.checked) {
-            event.target.textContent = "Hide it"
-            showInfo.style.display = "inline-block"
-        }
-
-        else {
-            event.target.textContent = "Show more"
-            showInfo.style.display = "none"
+        if (unlocked.checked && button.textContent === 'Show more') {
+            moreInfo.style.display = 'block';
+            button.textContent = 'Hide it'
+        } else if (unlocked.checked && button.textContent === 'Hide it') {
+            moreInfo.style.display = 'none';
+            button.textContent = 'Show more'
         }
     }
 
