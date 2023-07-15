@@ -15,15 +15,17 @@ function solve(list) {
     function trouble(horseName) {
         const indexOfHorse = horses.indexOf(horseName);
 
-        if (indexOfHorse > 0) {
-            const otherHorse = horses[indexOfHorse - 1];
-            const otherHorseIndex = horses.indexOf(otherHorse);
-
-            horses[otherHorseIndex] = horseName;
-            horses[indexOfHorse] = otherHorse;
-
-            console.log(`Trouble for ${horseName} - drops one position.`);
+        if (indexOfHorse === 0 || indexOfHorse === -1) {
+            return;
         }
+
+        const otherHorse = horses[indexOfHorse - 1];
+        const otherHorseIndex = horses.indexOf(otherHorse);
+
+        horses[otherHorseIndex] = horseName;
+        horses[indexOfHorse] = otherHorse;
+
+        console.log(`Trouble for ${horseName} - drops one position.`);
     }
 
     function rage(horseName) {
